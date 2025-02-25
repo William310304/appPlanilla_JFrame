@@ -3,7 +3,7 @@ package controller;
 import db.Db;
 import model.Empleado;
 
-public class EmpreadoDAO {
+public class EmpleadoDAO {
 	Db db =new Db("planilla");
 	
 	public boolean Login(Empleado empleado) {

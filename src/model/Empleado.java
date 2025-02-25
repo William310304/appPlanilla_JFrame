@@ -134,4 +134,8 @@ public class Empleado {
 	public void setPasswordd(String passwordd) {
 		Passwordd = passwordd;
 	}
+
+
+
+	
 }

@@ -8,21 +8,34 @@ import java.awt.Insets;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.MouseInputAdapter;
+
+import controller.EmpleadoDAO;
+import model.Empleado;
+
 import java.awt.Label;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseEvent;
 
 public class Login extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static final String Empleado = null;
 	JTextField txtDni;
 	JPasswordField txtPassword;
 	
@@ -52,9 +65,9 @@ public class Login extends JFrame {
 		
 		JPanel pnlLogin=new JPanel();
 		pnlLogin.setBounds(0, 0, 400, 60);
-		pnlLogin.setBackground(new Color(94,17,90));
+		pnlLogin.setBackground(new Color(94,17,90));//da color al background
 		pnlLogin.setLayout(null);
-		getContentPane().add(pnlLogin);
+		getContentPane().add(pnlLogin);//agrega la JFram
 		
 		JLabel imgLogo = new JLabel();
 		imgLogo.setIcon(new ImageIcon(Login.class.getResource("/img/logo.png")));
@@ -62,6 +75,7 @@ public class Login extends JFrame {
 		pnlLogin.add(imgLogo);
 		
 		JLabel imgCerrar =new JLabel();
+		
 		imgCerrar.setIcon(new ImageIcon(Login.class.getResource("/img/salir.png")));
 		imgCerrar.setBounds(360,18,24,24);
 		pnlLogin.add(imgCerrar);
@@ -106,7 +120,30 @@ public class Login extends JFrame {
 		btnCancelar.setMnemonic('a');
 		getContentPane().add(btnCancelar);
 		
+		btnIniciar.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {}} );
+		btnIniciar.addMouseListener(new MouseAdapter() {
+			@Override public void mouseEntered(MouseEvent e) {btn_focus(btnIniciar,true);}
+			@Override public void mouseExited(MouseEvent e) {btn_focus(btnIniciar,false);}
+			@Override
+			public void mouseClicked(MouseEvent e) {btnIniciar_actionPerformed();
+			}
+		});
+		btnIniciar.addFocusListener(new FocusAdapter() {
+			@Override public void focusGained(FocusEvent e) {btn_focus(btnIniciar,true);}
+			@Override public void focusLost(FocusEvent e) {btn_focus(btnIniciar,false);}
+		});
 		
+		btnCancelar.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {}} );
+		btnCancelar.addMouseListener(new MouseAdapter() {
+			@Override public void mouseEntered(MouseEvent e) {btn_focus(btnCancelar,true);}
+			@Override public void mouseExited(MouseEvent e) {btn_focus(btnCancelar,false);}
+		});
+		btnCancelar.addFocusListener(new FocusAdapter() {
+			@Override public void focusGained(FocusEvent e) {btn_focus(btnCancelar,true);}
+			@Override public void focusLost(FocusEvent e) {btn_focus(btnCancelar,false);}
+		});
 		
 		txtDni.addKeyListener(new KeyAdapter() {
 			@Override
@@ -124,6 +161,47 @@ public class Login extends JFrame {
 			@Override public void focusGained(FocusEvent e) {txt_focus(txtPassword,true); }
 			@Override public void focusLost(FocusEvent e) {txt_focus(txtPassword,false); } 
 		});
+		imgCerrar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {imgCerrar_mouseClick();
+				
+			}
+		});
+		
+	}
+	protected void btnIniciar_actionPerformed() {
+		String sDni=txtDni.getText();
+		String sPassword = String.valueOf(txtPassword.getPassword());
+		String sMensaje="";
+		if(sDni.isEmpty() || sDni.length()<8)sMensaje="Ingrese Dni";
+		else if(sPassword.isEmpty()|| sPassword.length()<6)sMensaje="Ingrese Password";
+		if(sMensaje.isEmpty()) {
+			Empleado empleado =new Empleado();
+			empleado.setDni(sDni);
+			empleado.setPasswordd(sPassword);
+			if(new EmpleadoDAO().Login(empleado)) {
+				Planilla planilla =new Planilla();
+				planilla.setEmpleado(empleado);
+				planilla.setVisible(true);
+			}else sMensaje ="Dni y/o password invalido";
+		}
+		if(!sMensaje.isEmpty()) {
+			btnCancelar_actionPerformed();
+			JOptionPane.showConfirmDialog(this, sMensaje);
+		}
+		
+	}
+	protected void btnCancelar_actionPerformed() {
+		
+		
+	}
+	protected void imgCerrar_mouseClick() {
+		if (JOptionPane.showConfirmDialog(null, "¿Deseas salir?", "Salir", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) System.exit(0);
+
+	}
+
+	protected void btn_focus(JButton btn, boolean bFocus) {
+		btn.setBackground(bFocus?Color.black:new Color(94,17,90));
 		
 	}
 
